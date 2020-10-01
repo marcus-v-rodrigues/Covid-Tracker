@@ -1,26 +1,57 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import {Cards, Chart, CountryPicker, BrazilCard, StartButton, Logo, TipsCards} from './components'
+import {fetchData} from './api'
+import styles from './App.module.css'
+
+class App extends React.Component {
+    constructor(){ //Construtor da Classe
+        super() //Chamamento do construtor da classe pai
+        this.state = {
+            data: {},
+            country: '',
+        }
+    }
+
+    handleCountryChange = async (country) => {
+        const fetchedData = await fetchData(country)
+        this.setState({data: fetchedData, country: country})
+    }
+
+    async componentDidMount(){ //Método que é chamado toda vez que um componente é montado. Está sendo usado para chamar uma função GET da API
+        const fetchedData = await fetchData()
+        this.setState({data: fetchedData})
+    }
+
+    render(){//Responsável por renderizar os componentes do React na div root do HTML.
+
+        const {data, country} = this.state
+
+        let brazilCard  
+        if(this.state.country === 'Brazil'){
+            brazilCard = <BrazilCard/>
+        } else{
+            brazilCard = null
+        }
+
+        return(
+            <>
+                <div className={styles.landing+' '+styles.container}>
+                    <Logo/>
+                    <StartButton title="Iniciar" reference='tracker'/>
+                </div>
+                <div className={styles.container}>
+                    <TipsCards/>
+                </div>
+                <div className={styles.container} id='tracker'>
+                    <Cards data={data} />
+                    <CountryPicker handleCountryChange={this.handleCountryChange}/> {/*handleCountryChange é um prop do componente CountryPicker */}
+                    <Chart data={data} country={country}/>
+                    {brazilCard}
+                </div>
+            </>
+        )  
+    }
 }
 
-export default App;
+export default App

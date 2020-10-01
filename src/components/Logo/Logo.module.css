@@ -1,0 +1,14 @@
+svg{
+    display: flex;
+    justify-content: center;
+    height:80%;
+    width:80%;
+}
+
+.image{
+    margin: auto;
+    display: inline-block;  
+    width:50%;
+    x:25%;
+    y:25%;
+}
